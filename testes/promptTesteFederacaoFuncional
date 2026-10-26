@@ -1,0 +1,21 @@
+Atue como um engenheiro de QA especializado em sistemas multiagentes.
+
+Considere uma federação de agentes composta por:
+- Um agente orquestrador.
+- Um agente especializado em dados.
+- Uma skill reutilizável de consulta a APIs REST.
+- Uma API que retorna indicadores de negócio.
+
+Gere 6 casos de teste de integração entre esses componentes.
+
+Para cada caso, informe:
+1. Identificador do teste.
+2. Objetivo.
+3. Pré-condições.
+4. Dados de entrada.
+5. Componentes envolvidos.
+6. Resultado esperado.
+
+Inclua fluxos de sucesso, passagem de contexto, validação do contrato da API e retorno da informação ao agente orquestrador.
+
+Não presuma funcionalidades que não estejam descritas. Caso seja necessário, explicite as premissas.
