@@ -1,0 +1,15 @@
+{
+  "descricao": "Envelope ilustrativo de delegacao Orquestrador -> Agente de Dados; nao e o corpo da requisicao GET REST.",
+  "correlation_id": "123e4567-e89b-42d3-a456-426614174000",
+  "agente_origem": "orquestrador",
+  "agente_destino": "agente-dados",
+  "skill": "consultar-api-rest",
+  "acao": "consultar_indicador",
+  "parametros": {
+    "id": "IND-001"
+  },
+  "contexto_autorizacao": {
+    "principal_id": "usuario-teste-001",
+    "escopos_solicitados": ["indicadores:leitura"]
+  }
+}

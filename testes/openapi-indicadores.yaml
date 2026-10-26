@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: API Fictícia de Indicadores — Federação de Agentes
+  version: 0.1.0
+  description: >
+    Contrato de referência para testes acadêmicos. Não representa uma API real,
+    nem comprova implementação dos controles descritos.
+servers:
+  - url: https://api.exemplo.invalid/v1
+    description: Endereço reservado de documentação (não operacional)
+paths:
+  /indicadores/{id}:
+    get:
+      operationId: consultarIndicador
+      summary: Consultar indicador por identificador
+      description: >
+        O agente de dados utiliza a skill consultar-api-rest após a verificação
+        de autorização. Autenticação, permissões e auditoria devem ser
+        implementadas e validadas no protótipo.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: IND-001
+        - name: X-Correlation-ID
+          in: header
+          required: true
+          description: ID sintético usado para rastrear a solicitação ponta a ponta.
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-42d3-a456-426614174000
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Indicador retornado
+          headers:
+            X-Correlation-ID:
+              description: Mesmo identificador recebido na solicitação.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Indicador'
+              examples:
+                sucesso:
+                  $ref: '#/components/examples/IndicadorExemplo'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/NaoAutorizado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+        '503':
+          $ref: '#/components/responses/Indisponivel'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Premissa de autenticação para o exercício; confirmar implementação.
+  schemas:
+    Indicador:
+      type: object
+      additionalProperties: false
+      required: [id, valor, unidade, referencia]
+      properties:
+        id:
+          type: string
+          example: IND-001
+        valor:
+          type: number
+          example: 94.5
+        unidade:
+          type: string
+          example: percentual
+        referencia:
+          type: string
+          format: date
+          example: '2026-10-01'
+    Erro:
+      type: object
+      additionalProperties: false
+      required: [codigo, mensagem, correlation_id]
+      properties:
+        codigo:
+          type: string
+          example: ACESSO_NEGADO
+        mensagem:
+          type: string
+          description: Mensagem genérica, sem credenciais ou detalhes internos.
+          example: Acesso não autorizado ao recurso solicitado.
+        correlation_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-42d3-a456-426614174000
+  examples:
+    IndicadorExemplo:
+      value:
+        id: IND-001
+        valor: 94.5
+        unidade: percentual
+        referencia: '2026-10-01'
+  responses:
+    NaoAutenticado:
+      description: Credenciais ausentes ou inválidas
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            codigo: NAO_AUTENTICADO
+            mensagem: Autenticação necessária.
+            correlation_id: 123e4567-e89b-42d3-a456-426614174000
+    NaoAutorizado:
+      description: Identidade autenticada sem permissão de consulta
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            codigo: ACESSO_NEGADO
+            mensagem: Acesso não autorizado ao recurso solicitado.
+            correlation_id: 123e4567-e89b-42d3-a456-426614174000
+    NaoEncontrado:
+      description: Indicador não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            codigo: NAO_ENCONTRADO
+            mensagem: Indicador não encontrado.
+            correlation_id: 123e4567-e89b-42d3-a456-426614174000
+    ErroInterno:
+      description: Erro interno sem divulgação de detalhes técnicos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            codigo: ERRO_INTERNO
+            mensagem: Não foi possível concluir a consulta.
+            correlation_id: 123e4567-e89b-42d3-a456-426614174000
+    Indisponivel:
+      description: Serviço temporariamente indisponível
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            codigo: SERVICO_INDISPONIVEL
+            mensagem: Serviço temporariamente indisponível.
+            correlation_id: 123e4567-e89b-42d3-a456-426614174000
